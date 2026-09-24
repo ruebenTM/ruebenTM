@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Glorious Food</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', Arial, sans-serif; background: #f7f7f5; color: #333; }
+    a { text-decoration: none; color: inherit; cursor: pointer; }
+
+    /* navigation */
+    .navbar {
+      background: #fff;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .site-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d6a4f;
+    }
+    .site-title span { color: #e76f51; }
+    .menu { display: flex; gap: 6px; }
+    .menu a {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      border-radius: 6px;
+    }
+    .menu a:hover { background: #f0f0ed; color: #333; }
+    .menu a.on { background: #2d6a4f; color: #fff; }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hamburger div { width: 20px; height: 2px; background: #333; }
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 20px;
+    }
+    .mobile-menu.show { display: flex; }
+    .mobile-menu a {
+      padding: 12px 0;
+      font-size: 15px;
+      font-weight: 500;
+      color: #555;
+      border-bottom: 1px solid #eee;
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .mobile-menu a.on { color: #2d6a4f; font-weight: 700; }
+
+    /* pages */
+    .pg { display: none; }
+    .pg.show { display: block; }
+
+    /* banner area */
+    .banner {
+      background: #fff;
+      padding: 60px 30px 50px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+    .banner small {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2d6a4f;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .banner h1 {
+      font-size: clamp(28px, 5vw, 48px);
+      color: #1b4332;
+      margin-bottom: 14px;
+      line-height: 1.15;
+    }
+    .banner h1 em { font-style: italic; color: #e76f51; }
+    .banner p {
+      color: #777;
+      max-width: 480px;
+      margin: 0 auto 28px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    .banner-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-green { background: #2d6a4f; color: #fff; }
+    .btn-green:hover { background: #245a42; }
+    .btn-outline { background: #fff; color: #2d6a4f; border: 2px solid #2d6a4f; }
+    .btn-outline:hover { background: #f0faf5; }
+
+    .food-emojis {
+      font-size: 32px;
+      margin-top: 30px;
+      letter-spacing: 8px;
+    }
+
+    /* stats strip */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    .stats div { padding: 10px; }
+    .stats strong {
+      display: block;
+      font-size: 28px;
+      color: #e76f51;
+      font-weight: 700;
+    }
+    .stats span { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* sections */
+    .section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 50px 24px;
+    }
+    .section-title {
+      font-size: 24px;
+      color: #1b4332;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+
+    /* why it matters cards */
+    .cards-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .info-card {
+      background: #fff;
+      border: 1px solid #e8e8e4;
+      border-radius: 10px;
+      padding: 24px 20px;
+    }
+    .info-card .emoji { font-size: 28px; margin-bottom: 10px; }
+    .info-card h3 { font-size: 15px; color: #1b4332; margin-bottom: 6px; }
+    .info-card p { font-size: 13px; color: #777; line-height: 1.6; }
+
+    /* green callout box */
+    .tip-box {
+      background: #1b4332;
+      color: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      margin: 30px auto;
+      max-width: 1000px;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+    .tip-box strong { color: #f4a261; }
+
+    /* navigation cards (explore section) */
+    .nav-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+    .nav-card {
+      background: #fff;
+      border: 1px solid #e8e8e4;
+      border-radius: 10px;
+      padding: 22px 18px;
+      cursor: pointer;
+    }
+    .nav-card:hover { border-color: #2d6a4f; }
+    .nav-card .emoji { font-size: 24px; margin-bottom: 8px; }
+    .nav-card h3 { font-size: 15px; color: #1b4332; margin-bottom: 5px; }
+    .nav-card p { font-size: 13px; color: #888; line-height: 1.55; margin-bottom: 10px; }
+    .nav-card .link { font-size: 13px; color: #e76f51; font-weight: 600; }
+
+    /* page headers */
+    .page-header {
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      padding: 45px 30px 35px;
+    }
+    .page-header small {
+      color: #e76f51;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .page-header h1 {
+      font-size: clamp(24px, 4vw, 36px);
+      color: #1b4332;
+      margin: 8px 0;
+    }
+    .page-header p { color: #888; font-size: 14px; max-width: 500px; line-height: 1.6; }
+
+    /* food group cards */
+    .fg-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .fg-card {
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+    .fg-card .emoji { font-size: 36px; margin-bottom: 12px; }
+    .fg-card h3 { font-size: 18px; color: #1b4332; margin-bottom: 8px; }
+    .fg-card p { font-size: 13px; color: #666; line-height: 1.65; flex: 1; margin-bottom: 14px; }
+    .fg-card .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 16px; }
+    .fg-card .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.7);
+    }
+    .fg-card .bottom {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .fg-card .serves { font-size: 26px; font-weight: 700; }
+    .fg-card .serves-label { font-size: 11px; color: #888; text-transform: uppercase; }
+    .fg-card .eg { font-size: 12px; color: #888; text-align: right; line-height: 1.5; }
+
+    .c-grain { background: #fef3e2; }
+    .c-grain .serves { color: #c47f17; }
+    .c-fruit { background: #fce8e2; }
+    .c-fruit .serves { color: #e76f51; }
+    .c-veg { background: #e4f0e6; }
+    .c-veg .serves { color: #2d6a4f; }
+    .c-dairy { background: #e2eef6; }
+    .c-dairy .serves { color: #2b6fa6; }
+    .c-meat { background: #f0e4f3; }
+    .c-meat .serves { color: #7a3e98; }
+
+    /* tabs (health page) */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      padding: 16px 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 8px 18px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+    }
+    .tab-btn:hover { border-color: #2d6a4f; color: #2d6a4f; }
+    .tab-btn.on { background: #2d6a4f; color: #fff; border-color: #2d6a4f; }
+    .tab-content { display: none; }
+    .tab-content.show { display: block; }
+
+    /* guidelines list */
+    .guide-list { display: flex; flex-direction: column; gap: 12px; }
+    .guide-item {
+      background: #fff;
+      border: 1px solid #e8e8e4;
+      border-radius: 10px;
+      padding: 18px 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .guide-num {
+      width: 34px; height: 34px;
+      background: #2d6a4f;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .guide-item h4 { font-size: 14px; color: #1b4332; margin-bottom: 4px; }
+    .guide-item p { font-size: 13px; color: #777; line-height: 1.6; }
+
+    /* nutrient cards */
+    .nutrient-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .nutrient-card {
+      background: #fff;
+      border: 1px solid #e8e8e4;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .nutrient-top { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+    .nutrient-top .emoji { font-size: 22px; }
+    .nutrient-card h3 { font-size: 15px; color: #1b4332; }
+    .nutrient-card .amt { font-size: 12px; color: #e76f51; font-weight: 600; }
+    .nutrient-card p { font-size: 13px; color: #777; line-height: 1.6; margin: 8px 0 10px; }
+    .nutrient-card .ntags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .nutrient-card .ntag {
+      font-size: 11px;
+      background: #f2f0eb;
+      padding: 3px 10px;
+      border-radius: 12px;
+      color: #777;
+      font-weight: 500;
+    }
+
+    /* simple table */
+    .simple-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid #e8e8e4;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .simple-table th {
+      text-align: left;
+      font-size: 12px;
+      color: #999;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      border-bottom: 1px solid #eee;
+      font-weight: 600;
+    }
+    .simple-table td {
+      padding: 14px 16px;
+      font-size: 14px;
+      border-bottom: 1px solid #f5f5f3;
+    }
+    .simple-table tr:last-child td { border-bottom: none; }
+    .simple-table .serves-td { color: #e76f51; font-weight: 700; text-align: center; }
+    .simple-table .tag {
+      display: inline-block;
+      font-size: 11px;
+      background: #f2f0eb;
+      padding: 2px 8px;
+      border-radius: 10px;
+      color: #777;
+      margin: 2px;
+    }
+
+    /* recipe cards */
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 18px;
+    }
+    .recipe-card {
+      background: #fff;
+      border: 1px solid #e8e8e4;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .recipe-top {
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+    }
+    .rt1 { background: #fce8e2; }
+    .rt2 { background: #e4f0e6; }
+    .rt3 { background: #e2eef6; }
+    .rt4 { background: #fef3e2; }
+    .rt5 { background: #f0e4f3; }
+    .rt6 { background: #e2f5ec; }
+    .recipe-body { padding: 18px; }
+    .recipe-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #e8f5e9;
+      color: #2d6a4f;
+      margin-bottom: 8px;
+    }
+    .recipe-card h3 { font-size: 16px; color: #1b4332; margin-bottom: 6px; }
+    .recipe-meta { font-size: 12px; color: #999; margin-bottom: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .expand-btn {
+      background: #f0f0ed;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      cursor: pointer;
+    }
+    .expand-btn:hover { background: #e4e4df; }
+    .expand-btn.open { background: #2d6a4f; color: #fff; }
+    .recipe-details { display: none; padding-top: 16px; margin-top: 14px; border-top: 1px solid #eee; }
+    .recipe-details.open { display: block; }
+    .recipe-details h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #e76f51;
+      letter-spacing: 0.3px;
+      margin: 12px 0 6px;
+    }
+    .recipe-details h4:first-child { margin-top: 0; }
+    .recipe-details ul, .recipe-details ol { padding-left: 18px; font-size: 13px; color: #666; line-height: 1.9; }
+    .recipe-tip {
+      background: #f7f7f5;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* modifications */
+    .mod-info {
+      background: #e8f5e9;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 30px;
+    }
+    .mod-info h3 { font-size: 15px; color: #1b4332; margin-bottom: 6px; }
+    .mod-info p { font-size: 13px; color: #666; line-height: 1.65; }
+
+    .mod-block { margin-bottom: 36px; }
+    .mod-block h2 { font-size: 20px; color: #1b4332; margin-bottom: 4px; }
+    .mod-block .mod-desc { font-size: 13px; color: #888; font-style: italic; margin-bottom: 14px; }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .compare-side {
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .compare-side.before { background: #fce8e2; }
+    .compare-side.after { background: #e4f0e6; }
+    .compare-side .label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .compare-side.before .label { color: #c0553a; }
+    .compare-side.after .label { color: #2d6a4f; }
+    .compare-side h4 { font-size: 14px; color: #333; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+    .compare-side ul, .compare-side ol { padding-left: 18px; font-size: 13px; color: #666; line-height: 2; }
+    .compare-side .sub-heading { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #999; margin: 10px 0 5px; display: block; }
+    .new-val { color: #2d6a4f; font-weight: 700; }
+    .old-val { text-decoration: line-through; color: #bbb; font-size: 12px; display: block; }
+    .mod-badge {
+      display: inline-block;
+      background: #f4a261;
+      color: #5a3e0a;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 4px;
+      text-transform: uppercase;
+    }
+
+    /* footer */
+    .footer {
+      border-top: 1px solid #e8e8e4;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1000px;
+      margin: 30px auto 0;
+      font-size: 13px;
+      color: #aaa;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer strong { color: #2d6a4f; }
+    .footer strong span { color: #e76f51; }
+
+    @media (max-width: 768px) {
+      .menu { display: none; }
+      .hamburger { display: flex; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .compare { grid-template-columns: 1fr; }
+      .footer { flex-direction: column; text-align: center; }
+      .simple-table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="site-title" onclick="go('home')">Food Glorious <span>Food</span></div>
+  <div class="menu" id="menu">
+    <a onclick="go('home')" class="on" id="n-home">Home</a>
+    <a onclick="go('foodgroups')" id="n-foodgroups">Food Groups</a>
+    <a onclick="go('recipes')" id="n-recipes">Recipes</a>
+    <a onclick="go('mods')" id="n-mods">Modifications</a>
+    <a onclick="go('health')" id="n-health">Health</a>
+  </div>
+  <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('show')">
+    <div></div><div></div><div></div>
+  </button>
+</div>
+<div class="mobile-menu" id="mob">
+  <a onclick="go('home')" class="on" id="m-home">Home</a>
+  <a onclick="go('foodgroups')" id="m-foodgroups">Food Groups</a>
+  <a onclick="go('recipes')" id="m-recipes">Recipes</a>
+  <a onclick="go('mods')" id="m-mods">Modifications</a>
+  <a onclick="go('health')" id="m-health">Health</a>
+</div>
+
+<!-- HOME -->
+<div id="pg-home" class="pg show">
+  <div class="banner">
+    <small>Australian Adolescent Nutrition Guide</small>
+    <h1>Good food, <em>good mood.</em></h1>
+    <p>A guide to healthy eating for Australian adolescents — everything you need to nourish your body and fuel your future.</p>
+    <div class="banner-btns">
+      <button class="btn btn-green" onclick="go('recipes')">View Recipes</button>
+      <button class="btn btn-outline" onclick="go('health')">Health Advice</button>
+    </div>
+    <div class="food-emojis">🥑 🍓 🥚 🫐 🥦 🍋 🥕 🍇 🍊</div>
+  </div>
+
+  <div class="stats">
+    <div><strong>5</strong><span>Food Groups</span></div>
+    <div><strong>6</strong><span>Recipes</span></div>
+    <div><strong>4</strong><span>Modifications</span></div>
+    <div><strong>8–10</strong><span>Glasses Water</span></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Why it matters</h2>
+    <p class="section-sub">Adolescence is one of the most important times for your body's development. What you eat now shapes how you feel, think, and grow for decades.</p>
+    <div class="cards-row">
+      <div class="info-card" onclick="go('health')">
+        <div class="emoji">🧠</div>
+        <h3>Brain Power</h3>
+        <p>Good nutrition fuels concentration, memory, and learning — essential for school performance every day.</p>
+      </div>
+      <div class="info-card" onclick="go('health')">
+        <div class="emoji">💪</div>
+        <h3>Growth & Strength</h3>
+        <p>Protein, calcium, and iron support rapid muscle and bone development throughout your teenage years.</p>
+      </div>
+      <div class="info-card" onclick="go('recipes')">
+        <div class="emoji">⚡</div>
+        <h3>Energy All Day</h3>
+        <p>Complex carbohydrates provide slow-release energy to keep you alert and focused all day.</p>
+      </div>
+      <div class="info-card" onclick="go('mods')">
+        <div class="emoji">🛡️</div>
+        <h3>Disease Prevention</h3>
+        <p>A balanced diet rich in vitamins, minerals, and fibre lowers your risk of chronic disease later in life.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-left:24px;margin-right:24px;">
+    The Australian Dietary Guidelines recommend adolescents eat from <strong>all five food groups</strong> every single day. Many teens aren't getting enough dairy or vegetables — a well-packed lunchbox closes that gap.
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Explore the site</h2>
+    <p class="section-sub">Jump straight to what you need.</p>
+    <div class="nav-cards">
+      <div class="nav-card" onclick="go('foodgroups')">
+        <div class="emoji">🌾</div>
+        <h3>Food Groups</h3>
+        <p>Learn about all five food groups and how many serves you need every day.</p>
+        <span class="link">Explore →</span>
+      </div>
+      <div class="nav-card" onclick="go('recipes')">
+        <div class="emoji">🥗</div>
+        <h3>Recipes</h3>
+        <p>Six delicious lunchbox recipes — tap any card for ingredients and method.</p>
+        <span class="link">View recipes →</span>
+      </div>
+      <div class="nav-card" onclick="go('mods')">
+        <div class="emoji">✏️</div>
+        <h3>Modifications</h3>
+        <p>Simple ingredient swaps that turn everyday recipes into balanced meals.</p>
+        <span class="link">See mods →</span>
+      </div>
+      <div class="nav-card" onclick="go('health')">
+        <div class="emoji">📋</div>
+        <h3>Health Advice</h3>
+        <p>Dietary guidelines, key nutrients, and what your body needs as a teen.</p>
+        <span class="link">Read more →</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>Food Glorious <span>Food</span></strong>
+    <span>Year 8 Technology · Australian Dietary Guidelines (NHMRC)</span>
+  </div>
+</div>
+
+<!-- FOOD GROUPS -->
+<div id="pg-foodgroups" class="pg">
+  <div class="page-header">
+    <small>Australian Guide to Healthy Eating</small>
+    <h1>The Five Food Groups</h1>
+    <p>Every food group plays a unique role. Adolescents need serves from all five every single day to stay healthy and strong.</p>
+  </div>
+  <div class="section">
+    <div class="fg-list">
+      <div class="fg-card c-grain">
+        <span class="emoji">🌾</span>
+        <h3>Grain Foods</h3>
+        <p>Grains give your body energy to get through the day. They're packed with fibre, B vitamins, iron, and magnesium. Always try to pick wholegrain — it's way better for you.</p>
+        <div class="tags"><span class="tag">B Vitamins</span><span class="tag">Iron</span><span class="tag">Magnesium</span><span class="tag">Fibre</span></div>
+        <div class="bottom">
+          <div><div class="serves">7–8</div><div class="serves-label">serves / day</div></div>
+          <div class="eg">e.g. 1 slice bread<br>½ cup cooked rice</div>
+        </div>
+      </div>
+      <div class="fg-card c-fruit">
+        <span class="emoji">🍎</span>
+        <h3>Fruit</h3>
+        <p>Fruit is full of vitamins, fibre, and water. It boosts your immune system, helps digestion, and keeps your skin healthy. Eat a variety of colours for the best results.</p>
+        <div class="tags"><span class="tag">Vitamin C</span><span class="tag">Folate</span><span class="tag">Potassium</span></div>
+        <div class="bottom">
+          <div><div class="serves">2</div><div class="serves-label">serves / day</div></div>
+          <div class="eg">e.g. 1 medium apple<br>½ cup berries</div>
+        </div>
+      </div>
+      <div class="fg-card c-veg">
+        <span class="emoji">🥦</span>
+        <h3>Vegetables</h3>
+        <p>Veggies are loaded with vitamins and antioxidants that protect your body, support your immune system, and help you feel full and energised.</p>
+        <div class="tags"><span class="tag">Vitamin A</span><span class="tag">Vitamin K</span><span class="tag">Antioxidants</span></div>
+        <div class="bottom">
+          <div><div class="serves">5–6</div><div class="serves-label">serves / day</div></div>
+          <div class="eg">e.g. ½ cup cooked veg<br>1 cup salad leaves</div>
+        </div>
+      </div>
+      <div class="fg-card c-dairy">
+        <span class="emoji">🥛</span>
+        <h3>Dairy & Alternatives</h3>
+        <p>Dairy builds strong bones and teeth. It gives you calcium, protein, and vitamin D — all things your body needs while you're still growing.</p>
+        <div class="tags"><span class="tag">Calcium</span><span class="tag">Protein</span><span class="tag">Vitamin D</span></div>
+        <div class="bottom">
+          <div><div class="serves">3.5</div><div class="serves-label">serves / day</div></div>
+          <div class="eg">e.g. 1 cup milk<br>40g hard cheese</div>
+        </div>
+      </div>
+      <div class="fg-card c-meat">
+        <span class="emoji">🥩</span>
+        <h3>Meat & Protein</h3>
+        <p>Protein helps your muscles grow and recover, and keeps your immune system strong. Meat, eggs, tofu, and legumes all count.</p>
+        <div class="tags"><span class="tag">Vitamin B12</span><span class="tag">Iron</span><span class="tag">Zinc</span></div>
+        <div class="bottom">
+          <div><div class="serves">2.5</div><div class="serves-label">serves / day</div></div>
+          <div class="eg">e.g. 65g cooked meat<br>2 eggs or 170g tofu</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><strong>Food Glorious <span>Food</span></strong><span>Based on Australian Dietary Guidelines (NHMRC)</span></div>
+</div>
+
+<!-- RECIPES -->
+<div id="pg-recipes" class="pg">
+  <div class="page-header">
+    <small>6 Lunchbox Recipes</small>
+    <h1>6 Delicious Recipes</h1>
+    <p>All recipes are easy to make, pack well in a lunchbox, and are full of nutrients to power your school day. Click any card to expand!</p>
+  </div>
+  <div class="section">
+    <div class="recipe-grid">
+
+      <div class="recipe-card">
+        <div class="recipe-top rt1">🌯</div>
+        <div class="recipe-body">
+          <span class="recipe-label">💪 High Protein</span>
+          <h3>Caesar Chicken Wrap</h3>
+          <div class="recipe-meta"><span>⏱ 10 mins</span><span>🍽 1 serve</span><span>🥗 Classic</span></div>
+          <button class="expand-btn" onclick="toggle(this)">Expand Recipe ↓</button>
+          <div class="recipe-details">
+            <h4>You Need</h4>
+            <ul>
+              <li>1 large tortilla wrap</li>
+              <li>1 cup cooked chicken (shredded or chopped)</li>
+              <li>1 handful crunchy lettuce</li>
+              <li>1–2 tbsp Caesar dressing</li>
+              <li>1 tbsp grated parmesan</li>
+              <li>Optional: a few croutons (add right before eating)</li>
+            </ul>
+            <h4>How to Make It</h4>
+            <ol>
+              <li>Mix the chicken with the Caesar dressing — just enough to coat it.</li>
+              <li>Lay the tortilla flat and add the lettuce first (stops the wrap getting soggy).</li>
+              <li>Add the chicken mixture and sprinkle parmesan on top.</li>
+              <li>Roll it up tightly, fold the ends in, and slice in half.</li>
+              <li>Wrap in foil or baking paper so it stays together in your lunchbox.</li>
+            </ol>
+            <div class="recipe-tip">Chicken is a lean protein that supports muscle growth. Lettuce and parmesan add vitamins and calcium.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-top rt2">🥑</div>
+        <div class="recipe-body">
+          <span class="recipe-label">🌱 Vegetarian</span>
+          <h3>Cream Cheese & Veggie Wrap</h3>
+          <div class="recipe-meta"><span>⏱ 8 mins</span><span>🍽 1 serve</span><span>🥦 Fresh</span></div>
+          <button class="expand-btn" onclick="toggle(this)">Expand Recipe ↓</button>
+          <div class="recipe-details">
+            <h4>You Need</h4>
+            <ul>
+              <li>1 large tortilla wrap</li>
+              <li>2 tbsp cream cheese (plain or herb)</li>
+              <li>¼ cucumber, cut into thin sticks</li>
+              <li>½ carrot, grated or cut into thin sticks</li>
+              <li>A handful of lettuce or spinach</li>
+              <li>A pinch of salt & pepper</li>
+              <li>Optional: a drizzle of sweet chilli sauce</li>
+            </ul>
+            <h4>How to Make It</h4>
+            <ol>
+              <li>Lay the tortilla flat on a clean surface.</li>
+              <li>Spread the cream cheese all over the wrap — right to the edges.</li>
+              <li>Place the cucumber, carrot, and lettuce in a line down the middle.</li>
+              <li>Add a tiny pinch of salt and pepper.</li>
+              <li>Add a small drizzle of sweet chilli sauce if you like.</li>
+              <li>Roll the wrap tightly, folding the sides in as you go.</li>
+              <li>Slice it in half and wrap it in foil or baking paper.</li>
+            </ol>
+            <div class="recipe-tip">Carrots are rich in vitamin A and cucumber adds hydration. Cream cheese provides calcium for strong bones.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-top rt3">🍝</div>
+        <div class="recipe-body">
+          <span class="recipe-label">🌱 Vegetarian</span>
+          <h3>Simple Veggie Pasta Salad</h3>
+          <div class="recipe-meta"><span>⏱ 15 mins</span><span>🍽 1–2 serves</span><span>🎒 Make Ahead</span></div>
+          <button class="expand-btn" onclick="toggle(this)">Expand Recipe ↓</button>
+          <div class="recipe-details">
+            <h4>You Need</h4>
+            <ul>
+              <li>1 cup cooked pasta (spirals or penne work best)</li>
+              <li>½ cup chopped veggies (cucumber, cherry tomatoes, corn, capsicum)</li>
+              <li>1 tbsp olive oil</li>
+              <li>1 tsp lemon juice</li>
+              <li>Salt & pepper</li>
+              <li>Optional: a sprinkle of grated cheese</li>
+            </ul>
+            <h4>How to Make It</h4>
+            <ol>
+              <li>Cook the pasta, drain it, and let it cool completely.</li>
+              <li>Chop your veggies into small bite-sized pieces.</li>
+              <li>In a small cup, mix olive oil, lemon juice, salt, and pepper.</li>
+              <li>Pour the dressing over the pasta and veggies.</li>
+              <li>Mix everything well so the pasta is lightly coated.</li>
+              <li>Add cheese if you want. Pack in a container and keep it chilled.</li>
+            </ol>
+            <div class="recipe-tip">Pasta provides carbohydrates for sustained energy. Colourful veggies add a range of vitamins and antioxidants.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-top rt4">🍜</div>
+        <div class="recipe-body">
+          <span class="recipe-label">🍗 Chicken</span>
+          <h3>Cold Chicken Noodle Bowl</h3>
+          <div class="recipe-meta"><span>⏱ 10 mins</span><span>🍽 1 serve</span><span>🥢 Asian-Inspired</span></div>
+          <button class="expand-btn" onclick="toggle(this)">Expand Recipe ↓</button>
+          <div class="recipe-details">
+            <h4>You Need</h4>
+            <ul>
+              <li>1 cup cooked noodles (ramen, rice noodles, or spaghetti)</li>
+              <li>½ cup shredded chicken</li>
+              <li>1 tsp soy sauce</li>
+              <li>½ tsp honey</li>
+              <li>A tiny splash of sesame oil (optional)</li>
+              <li>Cucumber slices or carrot sticks</li>
+            </ul>
+            <h4>How to Make It</h4>
+            <ol>
+              <li>In a small bowl, mix soy sauce, honey, and sesame oil.</li>
+              <li>Add the noodles and chicken.</li>
+              <li>Toss everything until the noodles are lightly coated.</li>
+              <li>Add cucumber or carrot for crunch.</li>
+              <li>Pack in a container and keep chilled.</li>
+            </ol>
+            <div class="recipe-tip">Chicken and noodles provide protein and carbohydrates. Honey gives natural sweetness while adding a touch of energy.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-top rt5">🥒</div>
+        <div class="recipe-body">
+          <span class="recipe-label">🌱 Vegetarian</span>
+          <h3>Cucumber, Avocado & Feta Sandwich</h3>
+          <div class="recipe-meta"><span>⏱ 10 mins</span><span>🍽 1 serve</span><span>🥑 Super Fresh</span></div>
+          <button class="expand-btn" onclick="toggle(this)">Expand Recipe ↓</button>
+          <div class="recipe-details">
+            <h4>You Need</h4>
+            <ul>
+              <li>2 slices of bread (wholemeal or white)</li>
+              <li>½ ripe avocado</li>
+              <li>¼ cucumber, sliced thin</li>
+              <li>2–3 tbsp crumbled feta cheese</li>
+              <li>A handful of spinach or lettuce</li>
+              <li>A tiny squeeze of lemon, salt & pepper</li>
+              <li>Optional: a drizzle of olive oil</li>
+            </ul>
+            <h4>How to Make It</h4>
+            <ol>
+              <li>Mash the avocado with lemon juice, salt, and pepper.</li>
+              <li>Spread the mashed avocado evenly over both slices of bread.</li>
+              <li>Lay the thin cucumber slices on top of the avocado.</li>
+              <li>Sprinkle the crumbled feta over the cucumber.</li>
+              <li>Put a handful of spinach or lettuce on top and press down gently.</li>
+              <li>Add a tiny drizzle of olive oil for extra richness.</li>
+              <li>Put the second slice of bread on top. Cut and pack.</li>
+            </ol>
+            <div class="recipe-tip">Avocado is packed with healthy fats for brain development. Feta provides calcium and protein. Perfect for warm days!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-top rt6">🥚</div>
+        <div class="recipe-body">
+          <span class="recipe-label">🌱 Vegetarian</span>
+          <h3>Egg & Veggie Mini Sandwiches</h3>
+          <div class="recipe-meta"><span>⏱ 15 mins</span><span>🍽 1 serve</span><span>💪 Protein-Packed</span></div>
+          <button class="expand-btn" onclick="toggle(this)">Expand Recipe ↓</button>
+          <div class="recipe-details">
+            <h4>You Need</h4>
+            <ul>
+              <li>2 slices of bread (white, wholemeal, or grain)</li>
+              <li>1 hard-boiled egg</li>
+              <li>1 tbsp mayo or Greek yogurt</li>
+              <li>A pinch of salt & pepper</li>
+              <li>¼ carrot, grated</li>
+              <li>A few thin cucumber slices</li>
+              <li>Optional: a tiny sprinkle of paprika or chives</li>
+            </ul>
+            <h4>How to Make It</h4>
+            <ol>
+              <li>Boil the egg for 10 minutes. Cool under cold water and peel.</li>
+              <li>Mash the egg with mayo (or yogurt), salt, and pepper until creamy.</li>
+              <li>Spread the egg mixture evenly on one slice of bread.</li>
+              <li>Sprinkle the grated carrot over the egg mixture.</li>
+              <li>Add thin cucumber slices on top for crunch.</li>
+              <li>Place the second slice of bread on top and press gently.</li>
+              <li>Cut into 4 small squares or 2 triangles. Pack in a container.</li>
+            </ol>
+            <div class="recipe-tip">Eggs are a complete protein with all essential amino acids. Carrots and cucumber add vitamins and a satisfying crunch.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><strong>Food Glorious <span>Food</span></strong><span>Based on Australian Dietary Guidelines (NHMRC)</span></div>
+</div>
+
+<!-- MODIFICATIONS -->
+<div id="pg-mods" class="pg">
+  <div class="page-header">
+    <small>Recipe Modifications</small>
+    <h1>Making Recipes Healthier</h1>
+    <p>Simple swaps that boost nutrition without losing the flavour. Every change is clearly explained.</p>
+  </div>
+  <div class="section">
+    <div class="mod-info">
+      <h3>What is a recipe modification?</h3>
+      <p>A modification is a simple ingredient swap or change that makes a recipe more nutritious. Below you'll see the original recipe next to the healthier version, with every change clearly highlighted.</p>
+    </div>
+
+    <div class="mod-block">
+      <h2>🌯 Caesar Chicken Wrap</h2>
+      <p class="mod-desc">Swapping Caesar dressing for yogurt and adding more vegetables reduces fat and boosts nutrients.</p>
+      <div class="compare">
+        <div class="compare-side before">
+          <span class="label">Before</span>
+          <h4>Classic Caesar Chicken Wrap</h4>
+          <ul><li>1 large tortilla wrap</li><li>1 cup cooked chicken</li><li>1 handful lettuce</li><li>2 tbsp Caesar dressing</li><li>1 tbsp grated parmesan</li><li>Croutons</li></ul>
+          <span class="sub-heading">Method</span>
+          <ol><li>Mix chicken with Caesar dressing.</li><li>Add lettuce to wrap.</li><li>Add chicken, parmesan, croutons.</li><li>Roll up and slice.</li></ol>
+        </div>
+        <div class="compare-side after">
+          <span class="label">After — Healthier</span>
+          <h4>Lighter Caesar Chicken Wrap</h4>
+          <ul>
+            <li><span class="new-val">Wholemeal wrap</span><span class="mod-badge">Mod</span><span class="old-val">plain white tortilla</span></li>
+            <li>1 cup cooked chicken</li>
+            <li><span class="new-val">Lettuce + sliced cucumber + grated carrot</span><span class="mod-badge">Mod</span><span class="old-val">lettuce only</span></li>
+            <li><span class="new-val">1 tbsp Greek yogurt + 1 tsp lemon juice</span><span class="mod-badge">Mod</span><span class="old-val">2 tbsp Caesar dressing</span></li>
+            <li>1 tbsp grated parmesan</li>
+            <li><span class="new-val">Skip croutons or use only a few</span><span class="mod-badge">Mod</span></li>
+          </ul>
+          <span class="sub-heading">Why These Changes?</span>
+          <ol>
+            <li>Wholemeal wrap adds more fibre than white.</li>
+            <li>Extra veggies add vitamins A and C.</li>
+            <li>Greek yogurt has less fat than Caesar dressing and adds protein and calcium.</li>
+            <li>Fewer croutons reduces refined carbs and sodium.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="mod-block">
+      <h2>🍝 Veggie Pasta Salad</h2>
+      <p class="mod-desc">Using wholemeal pasta and adding chickpeas makes this salad more filling and nutritious.</p>
+      <div class="compare">
+        <div class="compare-side before">
+          <span class="label">Before</span>
+          <h4>Simple Veggie Pasta Salad</h4>
+          <ul><li>1 cup white pasta</li><li>½ cup veggies</li><li>1 tbsp olive oil</li><li>1 tsp lemon juice</li><li>Salt & pepper</li></ul>
+          <span class="sub-heading">Method</span>
+          <ol><li>Cook and cool pasta.</li><li>Chop veggies and mix dressing.</li><li>Toss everything together.</li><li>Pack and chill.</li></ol>
+        </div>
+        <div class="compare-side after">
+          <span class="label">After — Healthier</span>
+          <h4>Wholemeal Pasta Salad with Chickpeas</h4>
+          <ul>
+            <li><span class="new-val">1 cup wholemeal pasta</span><span class="mod-badge">Mod</span><span class="old-val">white pasta</span></li>
+            <li>½ cup chopped veggies</li>
+            <li><span class="new-val">¼ cup chickpeas (drained)</span><span class="mod-badge">Mod</span></li>
+            <li>1 tbsp olive oil · 1 tsp lemon juice</li>
+            <li><span class="new-val">Fresh herbs (parsley or basil)</span><span class="mod-badge">Mod</span></li>
+          </ul>
+          <span class="sub-heading">Why These Changes?</span>
+          <ol>
+            <li>Wholemeal pasta has more fibre and nutrients than white pasta.</li>
+            <li>Chickpeas add plant-based protein and iron, keeping you fuller longer.</li>
+            <li>Fresh herbs add flavour without extra salt or calories.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="mod-block">
+      <h2>🍜 Cold Chicken Noodle Bowl</h2>
+      <p class="mod-desc">Switching to rice noodles and low-sodium soy sauce reduces salt and increases nutrients.</p>
+      <div class="compare">
+        <div class="compare-side before">
+          <span class="label">Before</span>
+          <h4>Classic Cold Noodle Bowl</h4>
+          <ul><li>1 cup cooked ramen noodles</li><li>½ cup shredded chicken</li><li>1 tsp soy sauce</li><li>½ tsp honey · sesame oil</li><li>Cucumber or carrot</li></ul>
+          <span class="sub-heading">Method</span>
+          <ol><li>Mix soy sauce, honey, sesame oil.</li><li>Add noodles and chicken. Toss.</li><li>Add veggies. Chill and pack.</li></ol>
+        </div>
+        <div class="compare-side after">
+          <span class="label">After — Healthier</span>
+          <h4>Healthier Cold Noodle Bowl</h4>
+          <ul>
+            <li><span class="new-val">1 cup rice noodles or soba noodles</span><span class="mod-badge">Mod</span><span class="old-val">ramen noodles</span></li>
+            <li>½ cup shredded chicken</li>
+            <li><span class="new-val">1 tsp low-sodium soy sauce</span><span class="mod-badge">Mod</span><span class="old-val">regular soy sauce</span></li>
+            <li>½ tsp honey</li>
+            <li><span class="new-val">½ tsp rice vinegar (added)</span><span class="mod-badge">Mod</span></li>
+            <li><span class="new-val">Cucumber + carrot + shredded cabbage</span><span class="mod-badge">Mod</span><span class="old-val">cucumber or carrot only</span></li>
+          </ul>
+          <span class="sub-heading">Why These Changes?</span>
+          <ol>
+            <li>Rice or soba noodles are lower in sodium than instant ramen.</li>
+            <li>Low-sodium soy sauce significantly reduces salt intake.</li>
+            <li>Rice vinegar adds flavour without fat or calories.</li>
+            <li>More vegetables means more vitamins, fibre, and crunch.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="mod-block">
+      <h2>🥚 Egg & Veggie Mini Sandwiches</h2>
+      <p class="mod-desc">Replacing mayo with Greek yogurt and using wholemeal bread makes this a much healthier option.</p>
+      <div class="compare">
+        <div class="compare-side before">
+          <span class="label">Before</span>
+          <h4>Classic Egg Sandwich</h4>
+          <ul><li>2 slices white bread</li><li>1 hard-boiled egg</li><li>1 tbsp mayo</li><li>Salt & pepper</li><li>¼ carrot, grated</li><li>Cucumber slices</li></ul>
+          <span class="sub-heading">Method</span>
+          <ol><li>Boil, cool and peel egg.</li><li>Mash with mayo, salt, pepper.</li><li>Spread on bread, add veggies.</li><li>Assemble and cut.</li></ol>
+        </div>
+        <div class="compare-side after">
+          <span class="label">After — Healthier</span>
+          <h4>Healthier Egg & Veggie Sandwich</h4>
+          <ul>
+            <li><span class="new-val">2 slices wholemeal or grain bread</span><span class="mod-badge">Mod</span><span class="old-val">white bread</span></li>
+            <li>1 hard-boiled egg</li>
+            <li><span class="new-val">1 tbsp Greek yogurt</span><span class="mod-badge">Mod</span><span class="old-val">1 tbsp mayo</span></li>
+            <li>Salt & pepper · ¼ carrot · cucumber</li>
+            <li><span class="new-val">A handful of spinach (added)</span><span class="mod-badge">Mod</span></li>
+          </ul>
+          <span class="sub-heading">Why These Changes?</span>
+          <ol>
+            <li>Wholemeal bread has more fibre and B vitamins than white bread.</li>
+            <li>Greek yogurt has significantly less fat than mayo and adds protein and calcium.</li>
+            <li>Spinach adds iron, folate, and vitamin K — important for adolescent health.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><strong>Food Glorious <span>Food</span></strong><span>Based on Australian Dietary Guidelines (NHMRC)</span></div>
+</div>
+
+<!-- HEALTH -->
+<div id="pg-health" class="pg">
+  <div class="page-header">
+    <small>Australian Dietary Guidelines</small>
+    <h1>Health Advice for Teens</h1>
+    <p>Understanding what your body needs during adolescence — the most important period of growth in your life.</p>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn on" onclick="tab('gl',this)">Guidelines</button>
+    <button class="tab-btn" onclick="tab('nut',this)">Nutrients</button>
+    <button class="tab-btn" onclick="tab('fg2',this)">Food Groups</button>
+  </div>
+  <div class="section" style="padding-top: 10px;">
+
+    <div id="t-gl" class="tab-content show">
+      <p style="color:#999;font-size:13px;margin-bottom:20px;">Evidence-based recommendations from the National Health and Medical Research Council (NHMRC).</p>
+      <div class="guide-list">
+        <div class="guide-item"><div class="guide-num">1</div><div><h4>Eat from all 5 food groups daily</h4><p>Include vegetables, fruit, grain foods, lean meats/alternatives, and dairy every day. Variety ensures you get all essential vitamins and minerals your body needs to grow.</p></div></div>
+        <div class="guide-item"><div class="guide-num">2</div><div><h4>Water as your main drink</h4><p>Teens should aim for 8–10 glasses of water daily. Avoid sugary drinks like soft drinks and energy drinks — they contribute to tooth decay and excess kilojoule intake.</p></div></div>
+        <div class="guide-item"><div class="guide-num">3</div><div><h4>Limit saturated fat, salt & sugar</h4><p>Processed snack foods and fast food should be occasional treats. Excessive saturated fat and sugar is linked to obesity and cardiovascular disease.</p></div></div>
+        <div class="guide-item"><div class="guide-num">4</div><div><h4>Encourage breastfeeding</h4><p>This guideline applies to infant nutrition but builds the foundation of healthy eating habits from birth — setting up lifelong healthy patterns for all Australians.</p></div></div>
+        <div class="guide-item"><div class="guide-num">5</div><div><h4>Prepare and store food safely</h4><p>Safe food handling prevents foodborne illness. Always refrigerate perishables, wash hands before eating, and use clean utensils — especially important for packed lunchboxes!</p></div></div>
+        <div class="guide-item"><div class="guide-num">6</div><div><h4>Achieve a healthy weight</h4><p>Balance kilojoule intake with at least 60 minutes of physical activity per day. This supports both physical and mental wellbeing throughout your entire adolescence.</p></div></div>
+      </div>
+    </div>
+
+    <div id="t-nut" class="tab-content">
+      <p style="color:#999;font-size:13px;margin-bottom:20px;">Key nutrients adolescents need — recommended amounts, what they do, and where to find them.</p>
+      <div class="nutrient-grid">
+        <div class="nutrient-card"><div class="nutrient-top"><span class="emoji">🥩</span><div><h3>Protein</h3><span class="amt">45–65g / day</span></div></div><p>Essential for muscle growth, tissue repair, and producing enzymes and hormones. Especially important during rapid growth.</p><div class="ntags"><span class="ntag">Chicken</span><span class="ntag">Fish</span><span class="ntag">Eggs</span><span class="ntag">Legumes</span></div></div>
+        <div class="nutrient-card"><div class="nutrient-top"><span class="emoji">🍞</span><div><h3>Carbohydrates</h3><span class="amt">45–65% energy</span></div></div><p>The body's primary fuel. Complex carbs from wholegrains provide slow, sustained energy for school and sport.</p><div class="ntags"><span class="ntag">Brown rice</span><span class="ntag">Oats</span><span class="ntag">Wholemeal</span></div></div>
+        <div class="nutrient-card"><div class="nutrient-top"><span class="emoji">🥑</span><div><h3>Healthy Fats</h3><span class="amt">20–35% energy</span></div></div><p>Supports brain development, hormone production, and absorption of fat-soluble vitamins A, D, E and K.</p><div class="ntags"><span class="ntag">Avocado</span><span class="ntag">Nuts</span><span class="ntag">Olive oil</span></div></div>
+        <div class="nutrient-card"><div class="nutrient-top"><span class="emoji">💧</span><div><h3>Water</h3><span class="amt">2–2.6 L / day</span></div></div><p>Regulates body temperature, transports nutrients, lubricates joints, and aids digestion.</p><div class="ntags"><span class="ntag">Plain water</span><span class="ntag">Milk</span><span class="ntag">Soup</span></div></div>
+        <div class="nutrient-card"><div class="nutrient-top"><span class="emoji">🥦</span><div><h3>Vitamins</h3><span class="amt">Varies by type</span></div></div><p>Vitamins A, B, C, D, E, and K support immune function, vision, bone health, and energy metabolism.</p><div class="ntags"><span class="ntag">Leafy greens</span><span class="ntag">Citrus</span><span class="ntag">Berries</span></div></div>
+        <div class="nutrient-card"><div class="nutrient-top"><span class="emoji">⚙️</span><div><h3>Minerals</h3><span class="amt">Varies by type</span></div></div><p>Calcium (bones), iron (blood), zinc (immunity), and magnesium (muscles) are critical for adolescent development.</p><div class="ntags"><span class="ntag">Dairy</span><span class="ntag">Red meat</span><span class="ntag">Spinach</span></div></div>
+      </div>
+    </div>
+
+    <div id="t-fg2" class="tab-content">
+      <p style="color:#999;font-size:13px;margin-bottom:20px;">Recommended daily serves from each of the five food groups for Australian adolescents.</p>
+      <table class="simple-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Food Group</th>
+            <th>Key Nutrients</th>
+            <th style="text-align:center">Serves/Day</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>🌾</td><td>Grain Foods</td><td><span class="tag">B Vitamins</span><span class="tag">Iron</span><span class="tag">Fibre</span></td><td class="serves-td">7–8</td></tr>
+          <tr><td>🍎</td><td>Fruit</td><td><span class="tag">Vitamin C</span><span class="tag">Vitamin A</span><span class="tag">Folate</span></td><td class="serves-td">2</td></tr>
+          <tr><td>🥦</td><td>Vegetables</td><td><span class="tag">Vitamin A</span><span class="tag">Vitamin K</span><span class="tag">Antioxidants</span></td><td class="serves-td">5–6</td></tr>
+          <tr><td>🥛</td><td>Dairy & Alternatives</td><td><span class="tag">Calcium</span><span class="tag">Protein</span><span class="tag">Vitamin D</span></td><td class="serves-td">3.5</td></tr>
+          <tr><td>🥩</td><td>Meat & Protein</td><td><span class="tag">Vitamin B12</span><span class="tag">Protein</span><span class="tag">Iron</span></td><td class="serves-td">2.5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+  <div class="footer"><strong>Food Glorious <span>Food</span></strong><span>Year 8 Technology · Australian Dietary Guidelines (NHMRC)</span></div>
+</div>
+
+<script>
+function go(p) {
+  document.querySelectorAll('.pg').forEach(function(el) { el.classList.remove('show'); });
+  document.querySelectorAll('.menu a, .mobile-menu a').forEach(function(el) { el.classList.remove('on'); });
+  document.getElementById('pg-' + p).classList.add('show');
+  var n = document.getElementById('n-' + p);
+  var m = document.getElementById('m-' + p);
+  if (n) n.classList.add('on');
+  if (m) m.classList.add('on');
+  document.getElementById('mob').classList.remove('show');
+  window.scrollTo(0, 0);
+}
+
+function tab(t, btn) {
+  document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('show'); });
+  document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('on'); });
+  document.getElementById('t-' + t).classList.add('show');
+  btn.classList.add('on');
+}
+
+function toggle(btn) {
+  var details = btn.nextElementSibling;
+  var isOpen = details.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  btn.textContent = isOpen ? 'Collapse ↑' : 'Expand Recipe ↓';
+}
+</script>
+</body>
+</html>
